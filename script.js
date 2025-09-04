@@ -1,6 +1,6 @@
 let display = document.getElementById("display");
 
-// Insert characters into display (string building)
+// Insert characters into display
 function insert(value) {
   display.value += value;
 }
@@ -10,7 +10,7 @@ function clearDisplay() {
   display.value = "";
 }
 
-// Backspace (remove last character using string functions)
+// Backspace
 function backspace() {
   display.value = display.value.slice(0, -1);
 }
