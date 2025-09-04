@@ -1,79 +1,88 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Scientific Calculator</title>
-<link rel="stylesheet" href="styles.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Scientific Calculator</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<main class="calculator">
-<header class="calc-header">
-<h1>Scientific Calculator</h1>
-</header>
+  <main class="calculator" role="application" aria-label="Scientific calculator">
+    <div class="screen">
+      <div id="prev" class="prev" aria-hidden="true"></div>
+      <input id="display" class="display" readonly aria-label="Calculator display" value="0">
+    </div>
 
+    <div class="controls-row">
+      <div class="left">
+        <label class="small-toggle">
+          <input type="checkbox" id="degToggle" />
+          <span>Deg</span>
+        </label>
+        <div class="memory">
+          <button data-action="mc" title="Memory Clear">MC</button>
+          <button data-action="mr" title="Memory Recall">MR</button>
+          <button data-action="mplus" title="Memory Add">M+</button>
+          <button data-action="mminus" title="Memory Subtract">M-</button>
+        </div>
+      </div>
+      <div class="right">
+        <button data-action="clear">C</button>
+        <button data-action="back">⌫</button>
+      </div>
+    </div>
 
-<section class="display">
-<div id="history" aria-hidden="true"></div>
-<input id="output" class="output" type="text" inputmode="none" aria-label="Calculator display" readonly />
-</section>
+    <div class="buttons">
+      <!-- Scientific row -->
+      <button data-value="(">(</button>
+      <button data-value=")">)</button>
+      <button data-value="^">x^y</button>
+      <button data-action="sqrt">√</button>
 
+      <button data-action="sin">sin</button>
+      <button data-action="cos">cos</button>
+      <button data-action="tan">tan</button>
+      <button data-action="fact">n!</button>
 
-<section class="buttons">
-<button class="btn wide" data-action="clear">C</button>
-<button class="btn" data-action="back">⌫</button>
-<button class="btn" data-value="%">%</button>
-<button class="btn" data-value="/">÷</button>
+      <button data-action="asin">asin</button>
+      <button data-action="acos">acos</button>
+      <button data-action="atan">atan</button>
+      <button data-action="exp">exp</button>
 
+      <button data-value="7">7</button>
+      <button data-value="8">8</button>
+      <button data-value="9">9</button>
+      <button data-action="div">÷</button>
 
-<button class="btn" data-value="7">7</button>
-<button class="btn" data-value="8">8</button>
-<button class="btn" data-value="9">9</button>
-<button class="btn" data-value="*">×</button>
+      <button data-value="4">4</button>
+      <button data-value="5">5</button>
+      <button data-value="6">6</button>
+      <button data-action="mul">×</button>
 
+      <button data-value="1">1</button>
+      <button data-value="2">2</button>
+      <button data-value="3">3</button>
+      <button data-action="sub">−</button>
 
-<button class="btn" data-value="4">4</button>
-<button class="btn" data-value="5">5</button>
-<button class="btn" data-value="6">6</button>
-<button class="btn" data-value="-">−</button>
+      <button data-value="0">0</button>
+      <button data-value=".">.</button>
+      <button data-action="percent">%</button>
+      <button data-action="add">+</button>
 
+      <button data-action="pi">π</button>
+      <button data-action="e">e</button>
+      <button data-action="log">log</button>
+      <button data-action="ln">ln</button>
 
-<button class="btn" data-value="1">1</button>
-<button class="btn" data-value="2">2</button>
-<button class="btn" data-value="3">3</button>
-<button class="btn" data-value="+">+</button>
+      <button class="wide" data-action="ans">Ans</button>
+      <button class="equals" data-action="equals">=</button>
+    </div>
 
+    <footer class="attribution">
+      Built with HTML • CSS • JavaScript — Keyboard supported
+    </footer>
+  </main>
 
-<button class="btn" data-value="0">0</button>
-<button class="btn" data-value=".">.</button>
-<button class="btn" data-action="paren">( )</button>
-<button class="btn equals" data-action="equals">=</button>
-
-
-<button class="btn func" data-fn="sqrt">√</button>
-<button class="btn func" data-fn="pow">xʸ</button>
-<button class="btn func" data-fn="ln">ln</button>
-<button class="btn func" data-fn="log">log</button>
-
-
-<button class="btn func" data-fn="sin">sin</button>
-<button class="btn func" data-fn="cos">cos</button>
-<button class="btn func" data-fn="tan">tan</button>
-<button class="btn func" data-fn="factorial">n!</button>
-
-
-<button class="btn mode" id="degRad">DEG</button>
-<button class="btn" data-fn="pi">π</button>
-<button class="btn" data-fn="e">e</button>
-<button class="btn" data-fn="rand">rand</button>
-</section>
-
-
-<footer class="credits">Built with HTML • CSS • JavaScript</footer>
-</main>
-
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
