@@ -18,7 +18,6 @@ function backspace() {
 // Evaluate expression safely
 function calculate() {
   try {
-    // Replace some symbols if needed
     let expression = display.value;
 
     // Replace division and multiplication symbols
