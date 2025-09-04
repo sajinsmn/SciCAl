@@ -1,88 +1,84 @@
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #e0e0e0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+const resultEl = document.getElementById("result");
+const historyEl = document.getElementById("history");
+let expression = "";
+
+function updateDisplay(){
+  resultEl.textContent = expression || "0";
 }
 
-.calculator {
-  width: 400px;
-  background: #f2f2f2;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  overflow: hidden;
+function factorial(n){
+  if(n < 0) return NaN;
+  if(n === 0) return 1;
+  return n * factorial(n-1);
 }
 
-.display {
-  background: #333;
-  color: #fff;
-  padding: 15px;
-  text-align: right;
-}
+document.querySelectorAll(".key").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const value = btn.dataset.value;
+    const action = btn.dataset.action;
 
-.display .history {
-  font-size: 14px;
-  color: #bbb;
-  min-height: 20px;
-}
+    if(value){
+      expression += value;
+      updateDisplay();
+    }
+    else if(action){
+      switch(action){
+        case "clear":
+          expression="";
+          historyEl.textContent="";
+          updateDisplay();
+          break;
+        case "del":
+          expression = expression.slice(0,-1);
+          updateDisplay();
+          break;
+        case "equals":
+          try{
+            let exp = expression.replace(/π/g, Math.PI);
+            exp = exp.replace(/√/g,"Math.sqrt");
+            exp = exp.replace(/sin/g,"Math.sin");
+            exp = exp.replace(/cos/g,"Math.cos");
+            exp = exp.replace(/tan/g,"Math.tan");
+            exp = exp.replace(/log/g,"Math.log10");
+            exp = exp.replace(/ln/g,"Math.log");
+            exp = exp.replace(/exp/g,"Math.exp");
+            exp = exp.replace(/(\\d+)\\!/g,(m,n)=>factorial(parseInt(n)));
+            exp = exp.replace(/(\\d+)\\^(\\d+)/g,(m,a,b)=>`Math.pow(${a},${b})`);
 
-.display .result {
-  font-size: 28px;
-  font-weight: bold;
-  min-height: 40px;
-}
-
-.keys {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 6px;
-  padding: 10px;
-  background: #d9d9d9;
-}
-
-.key {
-  padding: 15px;
-  font-size: 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  background: #f0f0f0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  transition: background 0.2s;
-}
-
-.key:hover {
-  background: #e0e0e0;
-}
-
-.key:active {
-  background: #ccc;
-}
-
-.key.op {
-  background: #b0bec5;
-  color: #000;
-  font-weight: bold;
-}
-
-.key.fn {
-  background: #cfd8dc;
-  color: #000;
-}
-
-.key.wide {
-  grid-column: span 2;
-}
-
-.key.tall {
-  grid-row: span 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  background: #546e7a;
-  color: #fff;
-}
+            let ans = eval(exp);
+            historyEl.textContent = expression + " =";
+            expression = ans.toString();
+            updateDisplay();
+          }catch(err){
+            resultEl.textContent = "Error";
+          }
+          break;
+        case "sqrt":
+          expression += "√(";
+          updateDisplay();
+          break;
+        case "pow":
+          expression += "^";
+          updateDisplay();
+          break;
+        case "pi":
+          expression += "π";
+          updateDisplay();
+          break;
+        case "fact":
+          expression += "!";
+          updateDisplay();
+          break;
+        case "sin":
+        case "cos":
+        case "tan":
+        case "log":
+        case "ln":
+        case "exp":
+          expression += action + "(";
+          updateDisplay();
+          break;
+      }
+    }
+  });
+});
