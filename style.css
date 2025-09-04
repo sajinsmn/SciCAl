@@ -1,47 +1,84 @@
-:root{
-  --bg:#0f1724;
-  --panel:#111827;
-  --accent:#06b6d4;
-  --muted:#9ca3af;
-  --glass: rgba(255,255,255,0.04);
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-  background: linear-gradient(180deg, #071029 0%, #071028 60%); color:#e6eef6;
-  display:flex; align-items:center; justify-content:center; padding:28px;
-}
-.calculator{
-  width:380px; max-width:96vw; border-radius:18px; padding:18px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  box-shadow: 0 10px 30px rgba(2,6,23,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
-  backdrop-filter: blur(6px);
-}
-.header{display:flex; justify-content:space-between; align-items:center; margin-bottom:12px}
-.brand{font-weight:600; letter-spacing:0.3px}
-.mode{font-size:12px; color:var(--muted)}
+const resultEl = document.getElementById("result");
+const historyEl = document.getElementById("history");
+let expression = "";
 
-.display{
-  background:var(--glass); padding:14px; border-radius:12px; margin-bottom:12px;
-  min-height:64px; display:flex; flex-direction:column; justify-content:center; gap:6px;
+function updateDisplay(){
+  resultEl.textContent = expression || "0";
 }
-.small-display{font-size:13px; color:var(--muted); text-overflow:ellipsis; overflow:hidden; white-space:nowrap}
-.main-display{font-size:26px; font-weight:600; text-align:right; overflow-wrap:anywhere}
 
-.keys{display:grid; grid-template-columns: repeat(6, 1fr); gap:8px}
-button.key{
-  border:0; border-radius:10px; padding:12px 8px; font-size:15px; cursor:pointer; user-select:none;
-  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04)); color:inherit;
-  box-shadow: 0 2px 6px rgba(2,6,23,0.5);
+function factorial(n){
+  if(n < 0) return NaN;
+  if(n === 0) return 1;
+  return n * factorial(n-1);
 }
-button.key:active{transform:translateY(1px)}
-.key.fn{background:transparent; color:var(--muted);}
-.key.op{background:linear-gradient(180deg, rgba(6,182,212,0.15), rgba(6,182,212,0.08)); color:var(--accent); font-weight:600}
-.key.wide{grid-column: span 2}
-.key.tall{grid-row: span 2; display:flex; align-items:center; justify-content:center}
 
-.footer{margin-top:12px; display:flex; justify-content:space-between; font-size:12px; color:var(--muted)}
+document.querySelectorAll(".key").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const value = btn.dataset.value;
+    const action = btn.dataset.action;
 
-@media (max-width:420px){
-  .keys{grid-template-columns: repeat(4,1fr)}
-}
+    if(value){
+      expression += value;
+      updateDisplay();
+    }
+    else if(action){
+      switch(action){
+        case "clear":
+          expression="";
+          historyEl.textContent="";
+          updateDisplay();
+          break;
+        case "del":
+          expression = expression.slice(0,-1);
+          updateDisplay();
+          break;
+        case "equals":
+          try{
+            let exp = expression.replace(/π/g, Math.PI);
+            exp = exp.replace(/√/g,"Math.sqrt");
+            exp = exp.replace(/sin/g,"Math.sin");
+            exp = exp.replace(/cos/g,"Math.cos");
+            exp = exp.replace(/tan/g,"Math.tan");
+            exp = exp.replace(/log/g,"Math.log10");
+            exp = exp.replace(/ln/g,"Math.log");
+            exp = exp.replace(/exp/g,"Math.exp");
+            exp = exp.replace(/(\\d+)\\!/g,(m,n)=>factorial(parseInt(n)));
+            exp = exp.replace(/(\\d+)\\^(\\d+)/g,(m,a,b)=>`Math.pow(${a},${b})`);
+
+            let ans = eval(exp);
+            historyEl.textContent = expression + " =";
+            expression = ans.toString();
+            updateDisplay();
+          }catch(err){
+            resultEl.textContent = "Error";
+          }
+          break;
+        case "sqrt":
+          expression += "√(";
+          updateDisplay();
+          break;
+        case "pow":
+          expression += "^";
+          updateDisplay();
+          break;
+        case "pi":
+          expression += "π";
+          updateDisplay();
+          break;
+        case "fact":
+          expression += "!";
+          updateDisplay();
+          break;
+        case "sin":
+        case "cos":
+        case "tan":
+        case "log":
+        case "ln":
+        case "exp":
+          expression += action + "(";
+          updateDisplay();
+          break;
+      }
+    }
+  });
+});
