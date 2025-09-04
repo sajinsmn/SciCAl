@@ -21,7 +21,7 @@ function calculate() {
     // Replace some symbols if needed
     let expression = display.value;
 
-    // Example of string replacement if user typed symbols
+    // Replace division and multiplication symbols
     expression = expression.replace(/÷/g, "/").replace(/×/g, "*");
 
     let result = eval(expression);
