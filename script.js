@@ -1,84 +1,89 @@
-const resultEl = document.getElementById("result");
-const historyEl = document.getElementById("history");
-let expression = "";
-
-function updateDisplay(){
-  resultEl.textContent = expression || "0";
+(() => {
+return ${e};
+`);
+return fn(Math, degMode);
+}catch(err){
+return 'Error';
+}
 }
 
-function factorial(n){
-  if(n < 0) return NaN;
-  if(n === 0) return 1;
-  return n * factorial(n-1);
+
+function applyFunction(name){
+switch(name){
+case 'sqrt': expr = `Math.sqrt(${expr||'0'})`; break;
+case 'ln': expr = `Math.log(${expr||'1'})`; break;
+case 'log': expr = `Math.log10(${expr||'1'})`; break;
+case 'sin': expr = `sin(${expr||'0'})`; break;
+case 'cos': expr = `cos(${expr||'0'})`; break;
+case 'tan': expr = `tan(${expr||'0'})`; break;
+case 'pi': expr += 'Math.PI'; break;
+case 'e': expr += 'Math.E'; break;
+case 'rand': expr += 'rand()'; break;
+case 'factorial': expr = `factorial(${expr||'0'})`; break;
+case 'pow': expr += '**'; break; // user will add exponent
+default: break;
+}
+updateDisplay();
 }
 
-document.querySelectorAll(".key").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const value = btn.dataset.value;
-    const action = btn.dataset.action;
 
-    if(value){
-      expression += value;
-      updateDisplay();
-    }
-    else if(action){
-      switch(action){
-        case "clear":
-          expression="";
-          historyEl.textContent="";
-          updateDisplay();
-          break;
-        case "del":
-          expression = expression.slice(0,-1);
-          updateDisplay();
-          break;
-        case "equals":
-          try{
-            let exp = expression.replace(/π/g, Math.PI);
-            exp = exp.replace(/√/g,"Math.sqrt");
-            exp = exp.replace(/sin/g,"Math.sin");
-            exp = exp.replace(/cos/g,"Math.cos");
-            exp = exp.replace(/tan/g,"Math.tan");
-            exp = exp.replace(/log/g,"Math.log10");
-            exp = exp.replace(/ln/g,"Math.log");
-            exp = exp.replace(/exp/g,"Math.exp");
-            exp = exp.replace(/(\\d+)\\!/g,(m,n)=>factorial(parseInt(n)));
-            exp = exp.replace(/(\\d+)\\^(\\d+)/g,(m,a,b)=>`Math.pow(${a},${b})`);
+buttons.forEach(btn => {
+btn.addEventListener('click', () => {
+const v = btn.getAttribute('data-value');
+const act = btn.getAttribute('data-action');
+const fn = btn.getAttribute('data-fn');
 
-            let ans = eval(exp);
-            historyEl.textContent = expression + " =";
-            expression = ans.toString();
-            updateDisplay();
-          }catch(err){
-            resultEl.textContent = "Error";
-          }
-          break;
-        case "sqrt":
-          expression += "√(";
-          updateDisplay();
-          break;
-        case "pow":
-          expression += "^";
-          updateDisplay();
-          break;
-        case "pi":
-          expression += "π";
-          updateDisplay();
-          break;
-        case "fact":
-          expression += "!";
-          updateDisplay();
-          break;
-        case "sin":
-        case "cos":
-        case "tan":
-        case "log":
-        case "ln":
-        case "exp":
-          expression += action + "(";
-          updateDisplay();
-          break;
-      }
-    }
-  });
+
+if(v) { expr += v; updateDisplay(); return; }
+if(act){
+if(act==='clear'){ expr=''; updateDisplay(); return; }
+if(act==='back'){ expr = expr.slice(0,-1); updateDisplay(); return; }
+if(act==='equals'){
+// evaluate safely
+const res = safeEval(expr);
+history.textContent = expr + ' =';
+expr = (typeof res === 'number' && !Number.isNaN(res)) ? String(Number.parseFloat(res.toPrecision(12))) : String(res);
+updateDisplay();
+return;
+}
+if(act==='paren'){
+// smart parentheses: add '(' if last char is operator or empty, else ')' if unmatched
+const opens = (expr.match(/\(/g)||[]).length;
+const closes = (expr.match(/\)/g)||[]).length;
+if(expr==='' || /[+\-*/(]$/.test(expr)) expr += '(';
+else if(opens>closes) expr += ')';
+else expr += '(';
+updateDisplay();
+return;
+}
+}
+if(fn){ applyFunction(fn); }
 });
+});
+
+
+// keyboard support
+window.addEventListener('keydown', (ev) => {
+if(ev.key === 'Enter'){
+document.querySelector('[data-action=equals]').click();
+ev.preventDefault();
+return;
+}
+if(ev.key === 'Backspace') { document.querySelector('[data-action=back]').click(); ev.preventDefault(); return; }
+const allowed = '0123456789.+-*/%()';
+if(allowed.includes(ev.key)) { expr += ev.key; updateDisplay(); }
+if(ev.key === 'd' || ev.key === 'D') { degMode = true; document.getElementById('degRad').textContent = 'DEG'; }
+if(ev.key === 'r' || ev.key === 'R') { degMode = false; document.getElementById('degRad').textContent = 'RAD'; }
+});
+
+
+// toggle deg/rad
+document.getElementById('degRad').addEventListener('click', () => {
+degMode = !degMode;
+document.getElementById('degRad').textContent = degMode? 'DEG' : 'RAD';
+});
+
+
+// init
+updateDisplay();
+})();
