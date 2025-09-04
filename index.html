@@ -8,13 +8,9 @@
 </head>
 <body>
   <div class="calculator">
-    <div class="header">
-      <div class="brand">SciCalc</div>
-      <div class="mode">Scientific</div>
-    </div>
     <div class="display">
-      <div class="small-display" id="history"></div>
-      <div class="main-display" id="result">0</div>
+      <div id="history" class="history"></div>
+      <div id="result" class="result">0</div>
     </div>
     <div class="keys">
       <button class="key fn" data-action="clear">AC</button>
@@ -51,10 +47,6 @@
       <button class="key wide" data-value="0">0</button>
       <button class="key" data-value=".">.</button>
       <button class="key op tall" data-action="equals">=</button>
-    </div>
-    <div class="footer">
-      <span>Scientific Calculator</span>
-      <span>2025</span>
     </div>
   </div>
   <script src="script.js"></script>
